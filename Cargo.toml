@@ -1,0 +1,20 @@
+[package]
+name = "bayer_dither"
+version = "1.0.0"
+edition = "2024"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+after-effects = { git = "https://github.com/virtualritz/after-effects", rev = "c2eb86609b293f046b18bc3e18e110dcc9ae9f17" }
+
+[build-dependencies]
+pipl = { git = "https://github.com/virtualritz/after-effects", rev = "c2eb86609b293f046b18bc3e18e110dcc9ae9f17" }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true

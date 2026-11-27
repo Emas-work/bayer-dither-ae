@@ -1,0 +1,35 @@
+name: Build plugin
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build universal .plugin
+        run: ./mac/bundle.sh
+      - name: Zip (keeps bundle structure and signature)
+        run: cd dist && ditto -c -k --keepParent "Bayer Dither.plugin" "../BayerDither_Mac.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BayerDither_Mac
+          path: BayerDither_Mac.zip
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build .aex
+        run: cargo build --release
+      - name: Rename
+        shell: bash
+        run: mkdir -p dist && cp target/release/bayer_dither.dll "dist/Bayer Dither.aex"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BayerDither_Windows
+          path: dist/Bayer Dither.aex
